@@ -1,0 +1,7 @@
+#!/bin/bash
+
+source ./ZenVE/bin/activate
+
+./Main.py &
+
+firefox --new-window localhost:8888

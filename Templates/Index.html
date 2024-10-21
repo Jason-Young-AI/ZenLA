@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="{{ static_url('images/favicon.ico') }}">
+
+    <title>{{ Title }}</title>
+
+    <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ static_url('css/cover.css') }}" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="site-wrapper">
+      <div class="site-wrapper-inner">
+        <div class="cover-container">
+          <div class="masthead clearfix">
+            <div class="inner">
+              <h3 class="masthead-brand">Zen</h3>
+              <nav>
+                <ul class="nav masthead-nav">
+                  <li class="active"><a href="/{{ Change_To_Lang }}">{{ Lang_Expression }}</a></li>
+                </ul>
+              </nav>
+            </div>
+          </div>
+          <div class="inner cover">
+            <h1 class="cover-heading">Zen</h1>
+            <p class="lead">
+            {% if Lang == "CN" %}
+                Zen —— “禅”，是一款适用于科研人员和开发人员的中文分词系统。 
+            {% elif Lang == "EN" %}
+                Zen is a Chinese word segmentation system for both scientific research personnel and development personnel. 
+            {% end %}
+            </p>
+            <p class="lead">
+              <a href="/{{ Lang }}/Seg" class="btn btn-lg btn-default">
+              {% if Lang == "CN" %}
+                  开始使用
+              {% elif Lang == "EN" %}
+                  Get start
+              {% end %}
+              </a>
+            </p>
+          </div>
+          <div class="mastfoot">
+            <div class="inner">
+              <p> Copyright &copy; 2016 - 2017, <a href="#">Zen.com</a>, by <a href="#">@Zhengxin Yang</a>, All Rights Reserved. </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+  </body>
+</html>

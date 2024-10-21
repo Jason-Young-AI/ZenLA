@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" href="{{ static_url('images/favicon.ico') }}">
+
+    <title>{{ Title }}</title>
+
+    <link href="{{ static_url('css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ static_url('css/custom-styles.css') }}" rel="stylesheet" />
+  </head>
+  
+  <body>
+    <div id="wrapper">
+      <nav class="navbar navbar-default top-navbar" role="navigation">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/{{ Lang }}"><strong> Zen </strong></a>
+        </div>
+        
+        <div class="navbar-right">
+          <div class="btn-group">
+	        <button onclick="window.location.href='/'" class="btn btn-default">
+	          <strong>Home</strong>
+	        </button>
+	      </div>
+          <div class="btn-group">
+	        <button aria-expanded="false" data-toggle="dropdown" class="btn btn-default dropdown-toggle">
+	          <strong>{{ Lang_Expression }}</strong> <span class="caret"></span>
+	        </button>
+	        <ul class="dropdown-menu">
+		      <li><a href="/CN/Seg">中文</a></li>
+		      <li><a href="/EN/Seg">English</a></li>
+	        </ul>
+	      </div>
+	    </div>
+      </nav>
+      
+      <div id="page-wrapper" >
+        <div id="page-inner">
+		  <div class="row">
+            <div class="col-md-12">
+              <h1 class="page-header" style="font-size: 26px;">
+              {% if Lang == "EN" %}
+                Chinese Word Segmentation <small>Easy to use.</small>
+              {% elif Lang == "CN" %}
+                中文分词 <small>在线、简便。</small>
+              {% end %}
+              </h1>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-lg-6">
+              <div class="panel panel-default">
+              
+                <div class="panel-heading">
+                {% if Lang == "EN" %}
+                  Analysis Part
+                {% elif Lang == "CN" %}
+                  分析部分
+                {% end %}
+                </div>
+                
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-lg-12">
+                      <form id="Only-Form" method="post" action="/{{ Lang }}/Seg" role="form">
+                        <div class="form-group col-lg-12">
+                          <label>
+                          {% if Lang == "EN" %}
+                            Text Input Field
+                          {% elif Lang == "CN" %}
+                            文本输入区域
+                          {% end %}
+                          </label>
+                          <textarea name="InputText" class="form-control" rows="10" style="resize: none;">{{InputText}}</textarea>
+                          <div class="alert alert-success" style="margin-top: 5px;margin-bottom:0px;padding: 5px 10px 10px 10px;">
+                          {% if Lang == "EN" %}
+							Please input the Chinese text to be segmented above on this notice.
+                          {% elif Lang == "CN" %}
+                            请在该提示的上方输入需要分割的中文文本。
+                          {% end %}
+						  </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                        <!--
+                          <h4>
+                          {% if Lang == "EN" %}
+                            Word Segmentation Algorithm Parameters Settings
+                          {% elif Lang == "CN" %}
+                            分词算法参数设置
+                          {% end %}
+                          </h4>
+                          -->
+                          <label>
+                          {% if Lang == "EN" %}
+                            Word Segmentation Paths Number
+                          {% elif Lang == "CN" %}
+                            分词路径数
+                          {% end %}
+                          </label>
+                          <select name="NKind" class="form-control">
+                          {% for i in range(1,11) %}
+                            <option value="{{ i }}" {% if i== NKind %} selected="selected"  {% end %}>{{ i }}</option>
+                          {% end %}
+                          </select>
+                        </div>
+                        <div class="form-group col-lg-12">
+                          <label>
+                          {% if Lang == "EN" %}
+                            Smooth Parameter
+                          {% elif Lang == "CN" %}
+                            平滑参数
+                          {% end %}
+                          </label>
+                          <div class="input-group">
+                            <input id="Smooth" name="Smooth"class="form-control" value="{{ Smooth }}"type="text">
+                            <span class="input-group-addon">
+                            {% if Lang == "EN" %}
+                              Smooth Parameter should be a real in range of [0,1]
+                            {% elif Lang == "CN" %}
+                              平滑参数的值应为 [0,1] 区间内的任意实数
+                            {% end %}
+                            </span>
+                          </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                          <label style="padding-right:20px">
+                          {% if Lang == "EN" %}
+                            Select the Recognition Type
+                          {% elif Lang == "CN" %}
+                            请选择识别类型
+                          {% end %}
+                          </label>
+                          {% if Lang == "EN" %}
+                            <label class="checkbox" style="padding-left:20px">
+                              <input id="isPerson" type="checkbox" {% if isPerson %}checked=""{% end %}>
+                                Chinese Name Recognition
+                            </label>
+                          {% elif Lang == "CN" %}
+                            <label class="checkbox-inline">
+                              <input id="isPerson" type="checkbox" {% if isPerson %}checked=""{% end %}>
+                                人名识别
+                            </label>
+                          {% end %}
+                            <input type="hidden" id="HiddenPerson" {% if isPerson %}value="True"{% end %} name="isPerson"/>
+                          {% if Lang == "EN" %}
+                            <label class="checkbox" style="padding-left:20px">
+                              <input id="isPlace" type="checkbox" {% if isPlace %}checked=""{% end %}>
+                                Place Name Recognition
+                            </label>
+                          {% elif Lang == "CN" %}
+                            <label class="checkbox-inline">
+                              <input id="isPlace" type="checkbox" {% if isPlace %}checked=""{% end %}>
+                                地名识别
+                            </label>
+                          {% end %}
+                            <input type="hidden" id="HiddenPlace" {% if isPlace %}value="True"{% end %} name="isPlace"/>
+                          {% if Lang == "EN" %}
+                            <label class="checkbox" style="padding-left:20px">
+                              <input id="isForeign" type="checkbox" {% if isForeign %}checked=""{% end %}>
+                                Person Name Recognition
+                            </label>
+                          {% elif Lang == "CN" %}
+                            <label class="checkbox-inline">
+                              <input id="isForeign" type="checkbox" {% if isForeign %}checked=""{% end %}>
+                                外文译名识别
+                            </label>
+                          {% end %}
+                            <input type="hidden" id="HiddenForeign" {% if isForeign %}value="True"{% end %} name="isForeign"/>
+                            
+                            <input type="hidden" id="HiddenCheck" {% if isHidden=="true" %}value="true"{% end %} name="isHidden"/>
+                        </div>
+                        <div class="form-group col-lg-12">
+                          <button type="reset" class="btn btn-danger" style="float: left;">
+                            <strong>
+                            {% if Lang == "EN" %}
+                              Reset
+                            {% elif Lang == "CN" %}
+                              重置
+                            {% end %}
+                            </strong>
+                          </button>
+                          <button type="submit" class="btn btn-success" style="float: right;">
+                            <strong>
+                            {% if Lang == "EN" %}
+                              Analysis
+                            {% elif Lang == "CN" %}
+                              分析
+                            {% end %}
+                            </strong>
+                          </button>
+                        </div>
+                      </form>
+                    </div>  
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+            <div class="col-lg-6">
+              <div class="panel panel-default">
+              
+                <div class="panel-heading">
+                {% if Lang == "EN" %}
+                  Results of Analysis
+                {% elif Lang == "CN" %}
+                  分析结果
+                {% end %}
+                </div>
+                
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="col-lg-12">
+                    
+                      <h4>
+                      {% if Lang == "EN" %}
+                        Main
+                      {% elif Lang == "CN" %}
+                        主体
+                      {% end %}
+                      </h4>
+                      {% if not NoInput %}
+                        {% for index in range(0, len(OutputItems)) %}
+                          <h5>
+                          <strong>
+                          {% if Lang == "EN" %}
+                            The segmentation of the No. {{ index + 1 }} sentence is below : 
+                          {% elif Lang == "CN" %}
+                            第{{ index + 1 }}句的分词结果如下 : 
+                          {% end %}
+                          </strong>
+                          </h5>
+                          {% for i in range(0, len(OutputItems[index])) %}
+                            <h6>
+                            {% if Lang == "EN" %}
+                              The candidate segementation result [ {{ i + 1 }} ] : 
+                            {% elif Lang == "CN" %}
+                              候选分词结果 [ {{ i + 1 }} ] : 
+                            {% end %}
+                            </h6>
+                            {% for item in OutputItems[index][i] %}
+                              <div class="btn-group">
+                                <button class="btn btn-sm btn-default">{{ item[0] }}</button>
+                                <button name="POS" class="btn btn-sm btn-success" style="border-color:{{ item[2] }};background-color:{{ item[2] }};{% if isHidden=='true' %}display:none;{% end %}">{{ item[1] }}</button>
+                              </div>
+                            {% end %}
+                          {% end %}
+                        {% end %}
+                      {% else %}
+                      
+                        <div class="btn-group">
+                          <button class="btn btn-sm btn-warning">
+                          {% if Lang == "EN" %}
+                            Can not recieve the input text, please input the text in the left textarea.
+                          {% elif Lang == "CN" %}
+                            无法接收到输入内容，请在左侧输入分词文本
+                          {% end %}
+                          </button>
+                        </div>
+                      {% end %}
+                    </div>
+                    
+                    <div class="col-lg-12">
+                    
+                      <h4>
+                      {% if Lang == "EN" %}
+                        Options
+                      {% elif Lang == "CN" %}
+                        选项
+                      {% end %}
+                      </h4>
+                      <div class="btn-group">
+                        <button id="POS" class="btn btn-success">
+                          {% if Lang == "EN" %}
+                            {% if isHidden=="true" %}Show POS{% else %}Hide POS{% end %}
+                          {% elif Lang == "CN" %}
+                            {% if isHidden=="true" %}显示词性{% else %}隐藏词性{% end %}
+                          {% end %}
+                        </button>
+                      </div>
+                      
+                    </div>
+                    
+                  </div>
+                </div>
+                
+              </div>
+            </div>
+            
+          </div><!--Row-->
+		</div><!--Page-Inner-->
+      </div><!--Page-Wrapper-->
+	  <footer class="text-center">
+	    <p style="font-size: 14px;"> Copyright &copy; 2016 - 2017, <a href="#">Zen.com</a>, by <a href="#">@Zhengxin Yang</a>, All Rights Reserved. </p>
+	  </footer>
+    </div>
+    
+    <script src="{{ static_url('js/jquery.min.js') }}"></script>
+    <script src="{{ static_url('js/bootstrap.min.js') }}"></script>
+    <script type="text/javascript">
+
+      $(document).ready(function(){
+        $('#isPerson').bind('input propertychange change', function(){
+          if ($("#isPerson").prop("checked")){
+              $("#HiddenPerson").val("True");
+          }else{
+              $("#HiddenPerson").val("False");
+          }
+        });
+        
+        $('#isPlace').bind('input propertychange change', function(){
+          if ($("#isPlace").prop("checked")){
+              $("#HiddenPlace").val("True");
+          }else{
+              $("#HiddenPlace").val("False");
+          }
+        });
+        
+        $('#isForeign').bind('input propertychange change', function(){
+          if ($("#isForeign").prop("checked")){
+              $("#HiddenForeign").val("True");
+          }else{
+              $("#HiddenForeign").val("False");
+          }
+        });
+        
+        $('#POS').bind('click', function(){
+          if ($("#HiddenCheck").val()=="true"){
+              $("#HiddenCheck").val("false");
+          }else{
+              $("#HiddenCheck").val("true");
+          }
+        });
+        var Flag={{isHidden}}
+        $("#POS").click(function(){
+        {% if Lang == "EN"%}
+          if (!Flag){
+            $("#POS").text("Show POS");
+          }
+          if (Flag){
+            $("#POS").text("Hide POS");
+          }
+        {% elif Lang == "CN" %}
+          if (!Flag){
+            $("#POS").text("显示词性");
+          }
+          if (Flag){
+            $("#POS").text("隐藏词性");
+          }
+        {% end %}
+          $("button[name='POS']").toggle(1500);
+          Flag=!Flag
+        });
+        
+      });
+    </script>
+  </body>
+</html>
